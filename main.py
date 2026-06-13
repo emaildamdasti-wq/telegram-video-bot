@@ -1,31 +1,16 @@
 import os
-import time
 import requests
-import schedule
 
+TOKEN = os.environ["TOKEN"]
+CHAT_ID = os.environ["CHAT_ID"]
 
-TOKEN = os.getenv("TOKEN")
-CHAT_ID = os.getenv("CHAT_ID")
+url = f"https://api.telegram.org/bot{TOKEN}/sendVideo"
 
+with open("video.mp4", "rb") as video:
+    requests.post(
+        url,
+        data={"chat_id": CHAT_ID},
+        files={"video": video}
+    )
 
-def send_video():
-    url = f"https://api.telegram.org/bot{TOKEN}/sendVideo"
-
-    files = {
-        "video": open("video.mp4", "rb")
-    }
-
-    data = {
-        "chat_id": CHAT_ID,
-        "caption": "انگیزشی"
-    }
-
-    requests.post(url, files=files, data=data)
-
-
-schedule.every().day.at("07:00").do(send_video)
-
-
-while True:
-    schedule.run_pending()
-    time.sleep(30)
+print("Video sent successfully")
